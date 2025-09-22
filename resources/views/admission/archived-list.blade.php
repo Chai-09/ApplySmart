@@ -62,6 +62,16 @@
                     <td>{{ $applicant->formSubmission->applicant_email ?? 'N/A' }}</td>
                     <td>{{ $applicant->incoming_grlvl ?? 'N/A' }}</td>
                     <td>
+                        @if ($applicant->current_step == 1)
+                            <button type="button"
+                                onclick="showIncompleteAlert('{{ $applicant->applicant_fname }} {{ $applicant->applicant_lname }}')" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-pencil-square"></i>
+                            </button>
+                        @else
+                            <a href="{{ route('admission.editApplicant', $applicant->id) }}" class="btn btn-sm btn-primary">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                        @endif
                         <button type="button" class="btn btn-success btn-sm restore-btn" data-id="{{ $applicant->id }}" data-name="{{ $applicant->applicant_fname }} {{ $applicant->applicant_lname }}">
                             <i class="bi bi-arrow-counterclockwise"></i> Restore
                         </button>
@@ -80,16 +90,27 @@
             </tr>
         </tbody>
     @endif
-</table>
+    </table>
 
-<div class="d-flex justify-content-center mt-4">
-    {{ $applicants->withQueryString()->links('pagination::bootstrap-5') }}
-</div>
+    <div class="d-flex justify-content-center mt-4">
+        {{ $applicants->withQueryString()->links('pagination::bootstrap-5') }}
+    </div>
 
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+<script>
+    function showIncompleteAlert(applicantName) {
+        Swal.fire({
+            icon: 'info',
+            title: 'Form Incomplete',
+            text: applicantName + ' has not submitted their application form yet. Editing is not available at this stage.',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK'
+        });
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const form = document.getElementById('filterForm');
